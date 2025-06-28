@@ -14,14 +14,6 @@ async function getVersion() {
     const packageContent = await Bun.file(packageJsonPath).text();
     const packageJson = JSON.parse(packageContent);
     return packageJson.version;
-  } catch (e) {
-    return 'unknown';
-  }
-}
-
-function getGitCommit() {
-  try {
-    return execSync('git rev-parse --short HEAD', { cwd: import.meta.dir }).toString().trim();
   } catch {
     return 'unknown';
   }
@@ -29,9 +21,8 @@ function getGitCommit() {
 
 async function showUsage() {
   const version = await getVersion();
-  const commit = getGitCommit();
   console.log(`
-PDF Splitter MCP Server v${version} (${commit}) - Easy Installation Tool
+PDF Splitter MCP Server v${version} - Easy Installation Tool
 
 Usage:
   bunx ${PACKAGE_NAME} install claudecode    Install for Claude Code
@@ -104,15 +95,13 @@ async function installGeminiCLI() {
       try {
         const content = await readFile(configPath, "utf-8");
         config = JSON.parse(content);
-      } catch (error) {
+      } catch {
         console.warn("Warning: Could not parse existing config.json, creating new one");
       }
     }
     
     // Initialize mcpServers if it doesn't exist
-    if (!config.mcpServers) {
-      config.mcpServers = {};
-    }
+    config.mcpServers ??= {};
     
     // Add our server configuration
     config.mcpServers["pdf-splitter"] = isNetworkInvocation
@@ -160,7 +149,7 @@ async function main() {
   }
   
   switch (command) {
-    case "install":
+    case "install": {
       const target = args[1]?.toLowerCase();
       if (target === "claudecode") {
         await installClaudeCode();
@@ -172,6 +161,7 @@ async function main() {
         process.exit(1);
       }
       break;
+    }
       
     case "serve":
       await serve();

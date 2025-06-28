@@ -10,23 +10,38 @@ A Model Context Protocol (MCP) server that provides random access to PDF content
 # Linux/macOS
 curl -fsSL https://bun.sh/install | bash
 
-# Windows (using PowerShell)
+# Windows
 powershell -c "irm bun.sh/install.ps1 | iex"
 ```
 
 ## Quick Start - One Command Installation!
 
 ### For Claude Code:
+
 ```bash
 bunx espresso3389/pdf-splitter-mcp install claudecode
 ```
 
 ### For Gemini CLI:
+
 ```bash
 bunx espresso3389/pdf-splitter-mcp install geminicli
 ```
 
 That's it! The installer will automatically configure everything for you.
+
+### Note for upgrading the package
+
+Because `bunx` caches the downloaded package under your temporary directory, if you want to upgrade the package forcibly, you should delete the cache by yourself before `bunx`:
+
+```bash
+# Linux/macOS
+rm -rf /tmp/bunx-*-@espresso3389/pdf-splitter-mcp
+
+# Windows
+powershell -c "rm -Recurse -Force $env:TEMP/bunx-*-@espresso3389/pdf-splitter-mcp"
+```
+
 
 ## Manual Installation (Optional)
 

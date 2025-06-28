@@ -153,6 +153,31 @@ The following guidelines should be followed when writing documentation including
   - Use sections for different versions
   - Use bullet points for changes
 
+## Release Process
+
+When releasing a new version, follow these steps:
+
+1. **Determine Version Number**
+   - Patch release (0.x.Y): Bug fixes only
+   - Minor release (0.X.0): New features, backwards compatible
+   - Major release (X.0.0): Breaking changes
+
+2. **Update Version**
+   - Update version in `package.json`
+   - Update `CHANGELOG.md` with release notes following Keep a Changelog format
+
+3. **Commit and Tag**
+   ```bash
+   git add package.json CHANGELOG.md
+   git commit -m "Release version X.Y.Z"
+   git tag -a vX.Y.Z -m "Release vX.Y.Z"
+   ```
+
+4. **Push to GitHub**
+   ```bash
+   git push origin main --tags
+   ```
+
 ## Special Notes
 
 - `CHANGELOG.md` is not an implementation node. So it should be updated only on releasing a new version

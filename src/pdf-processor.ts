@@ -1,8 +1,8 @@
 import { readFile } from "fs/promises";
 import { createHash } from "crypto";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import type { PDFDocumentProxy, PDFPageProxy, TextContent } from "pdfjs-dist/types/src/display/api";
-import { createCanvas, Canvas } from "canvas";
+import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist/types/src/display/api";
+import { createCanvas } from "canvas";
 
 interface LoadedPDF {
   id: string;
@@ -56,7 +56,7 @@ interface RenderedPage {
 }
 
 export class PDFProcessor {
-  private loadedPDFs: Map<string, LoadedPDF> = new Map();
+  private readonly loadedPDFs: Map<string, LoadedPDF> = new Map();
 
   async loadPDF(path: string): Promise<{ id: string; pageCount: number }> {
     try {
@@ -175,14 +175,14 @@ export class PDFProcessor {
             ? await doc.getDestination(item.dest)
             : item.dest;
           
-          if (dest && dest[0]) {
+          if (dest?.[0]) {
             const pageRef = dest[0];
             const pageIndex = await this.getPageIndex(doc, pageRef);
             if (pageIndex !== null) {
               outlineItem.page = pageIndex + 1; // Convert to 1-based
             }
           }
-        } catch (error) {
+        } catch {
           console.warn("Could not resolve destination for:", item.title);
         }
       }
@@ -482,7 +482,7 @@ export class PDFProcessor {
               index: imgInfo.index,
               width: imgInfo.width,
               height: imgInfo.height,
-              format: imgInfo.format || 'png',
+              format: imgInfo.format ?? 'png',
               base64: base64,
             });
           }
@@ -550,8 +550,8 @@ export class PDFProcessor {
               images.push({
                 page: pageNum,
                 index: imageIndex++,
-                width: imageObj.width || 0,
-                height: imageObj.height || 0,
+                width: imageObj.width ?? 0,
+                height: imageObj.height ?? 0,
                 format: format,
                 data: imageData,
               });
@@ -667,7 +667,7 @@ export class PDFProcessor {
         const { createCanvas: createNapiCanvas } = await import('@napi-rs/canvas');
         canvas = createNapiCanvas(Math.round(viewport.width), Math.round(viewport.height));
         ctx = canvas.getContext('2d');
-      } catch (e) {
+      } catch {
         // Fallback to node-canvas
         canvas = createCanvas(Math.round(viewport.width), Math.round(viewport.height));
         ctx = canvas.getContext('2d');

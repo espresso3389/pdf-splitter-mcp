@@ -6,3 +6,4 @@ dist/
 .env.local
 .env.production
 bun.lockb
+.claude/settings.local.json
