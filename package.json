@@ -1,6 +1,6 @@
 {
   "name": "@espresso3389/pdf-splitter-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for random access to PDF contents",
   "main": "./src/cli.ts",
   "type": "module",
