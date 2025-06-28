@@ -55,8 +55,11 @@ async function installClaudeCode() {
   try {
     console.log("Installing PDF Splitter MCP for Claude Code...");
     
+    const isNetworkInvocation = process.env.npm_lifecycle_event === "bunx";
     const command = "claude";
-    const args = ["mcp", "add", "pdf-splitter", "--", "bunx", PACKAGE_NAME, "serve"];
+    const args = isNetworkInvocation
+      ? ["mcp", "add", "pdf-splitter", "--", "bunx", PACKAGE_NAME, "serve"]
+      : ["mcp", "add", "pdf-splitter", "--", "bun", "run", join(import.meta.dir, "cli.ts"), "serve"];
     
     const child = spawn(command, args, { stdio: "inherit" });
     
@@ -85,6 +88,7 @@ async function installGeminiCLI() {
   try {
     console.log("Installing PDF Splitter MCP for Gemini CLI...");
     
+    const isNetworkInvocation = process.env.npm_lifecycle_event === "bunx";
     const configDir = join(homedir(), ".config", "gemini-cli");
     const configPath = join(configDir, "config.json");
     
@@ -111,10 +115,15 @@ async function installGeminiCLI() {
     }
     
     // Add our server configuration
-    config.mcpServers["pdf-splitter"] = {
-      command: "bunx",
-      args: [PACKAGE_NAME, "serve"]
-    };
+    config.mcpServers["pdf-splitter"] = isNetworkInvocation
+      ? {
+          command: "bunx",
+          args: [PACKAGE_NAME, "serve"]
+        }
+      : {
+          command: "bun",
+          args: ["run", join(import.meta.dir, "cli.ts"), "serve"]
+        };
     
     // Write updated config
     await writeFile(configPath, JSON.stringify(config, null, 2));
